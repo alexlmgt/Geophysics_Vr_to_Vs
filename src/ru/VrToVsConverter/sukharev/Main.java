@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import static ru.VrToVsConverter.sukharev.PvsFile.readFile;
 
 
 // C:\Users\ASuharev\IdeaProjects\Для тестов\180094.pvs
@@ -43,19 +41,12 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        readFile();
 
-        for (PvsFile ele : pvsFilesList) {
-            System.out.println(ele.getName());
-            for (Map.Entry<Double, Double> values : ele.getDispersionResult().entrySet()) {
-                System.out.println(values.getKey() + " " + values.getValue());
-            }
-        }
+        new PvsFile().readFile();
+
 
         Converter converter = new Converter();
-        System.out.println("\n" + converter.poissonRatio);
-        System.out.println("\n" + converter.deltaX);
-        converter.findReleyVelocity();
+        converter.shearWaveVelocityBottomLayer();
     }
 
 

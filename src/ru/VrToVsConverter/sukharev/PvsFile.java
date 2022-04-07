@@ -13,6 +13,9 @@ public class PvsFile {
     private String name;
     private Map<Double, Double> dispersionResult;
 
+    public PvsFile() {
+    }
+
     public PvsFile(String name, Map<Double, Double> dispersionResult) {
         this.name = name;
         this.dispersionResult = dispersionResult;
@@ -30,7 +33,7 @@ public class PvsFile {
         this.dispersionResult = dispersionResult;
     }
 
-    static void readFile() {
+    void readFile() {
         for (String file : filesList) {
             String fileName = file.substring(file.lastIndexOf('\\') + 1, file.lastIndexOf('.'));
             Map<Double, Double> dispersionResult = new TreeMap<>();
@@ -42,8 +45,8 @@ public class PvsFile {
                     String[] box = str.trim().split(" ");
                     if (box.length == 4) {
                         Double frequency = Double.parseDouble(box[0]);
-                        Double velocity = Double.parseDouble(box[1]);
-                        dispersionResult.put(frequency, velocity);
+                        Double releyWaveVelocity = Double.parseDouble(box[1]);
+                        dispersionResult.put(frequency, releyWaveVelocity);
                     }
                 }
                 pvsFile.setDispersionResult(dispersionResult);
