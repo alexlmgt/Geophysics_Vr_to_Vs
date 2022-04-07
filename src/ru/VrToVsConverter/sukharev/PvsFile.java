@@ -45,8 +45,8 @@ public class PvsFile {
                     String[] box = str.trim().split(" ");
                     if (box.length == 4) {
                         Double frequency = Double.parseDouble(box[0]);
-                        Double releyWaveVelocity = Double.parseDouble(box[1]);
-                        dispersionResult.put(frequency, releyWaveVelocity);
+                        Double rayleighWaveVelocity = Double.parseDouble(box[1]);
+                        dispersionResult.put(frequency, rayleighWaveVelocity);
                     }
                 }
                 pvsFile.setDispersionResult(dispersionResult);
@@ -58,6 +58,8 @@ public class PvsFile {
         }
 
     }
+
+
 
 
 }

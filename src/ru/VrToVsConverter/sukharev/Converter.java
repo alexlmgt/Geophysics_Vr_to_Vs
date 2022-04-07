@@ -1,5 +1,12 @@
 package ru.VrToVsConverter.sukharev;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -7,73 +14,73 @@ import static ru.VrToVsConverter.sukharev.Main.*;
 
 public class Converter {
 
-    double poissonRatio = (longitudinalWaveVelocityTopLayer * longitudinalWaveVelocityTopLayer -
+    List<String> resultList = new ArrayList<>();
+
+    private final double poissonRatio = (longitudinalWaveVelocityTopLayer * longitudinalWaveVelocityTopLayer -
             2 * shearWaveVelocityTopLayer * shearWaveVelocityTopLayer) / (2 * longitudinalWaveVelocityTopLayer * longitudinalWaveVelocityTopLayer -
             2 * shearWaveVelocityTopLayer * shearWaveVelocityTopLayer); // коэффициент Пуассона
 
-    double deltaX = Math.ceil(shearWaveVelocityTopLayer * (0.88 + (0.06 / 0.35) * poissonRatio));
+    private final double deltaX = Math.ceil(shearWaveVelocityTopLayer * (0.88 + (0.06 / 0.35) * poissonRatio));
 
-    double findVelocity(double deltaX, double shearWaveVelocity, double longitudinalWaveVelocity, boolean isFindVr) {
-        Map<Double, Double> allWaveReley = new TreeMap<>();
-        double waveReleySum;
+    private double findVelocity(double deltaX, double shearWaveVelocity, double longitudinalWaveVelocity, boolean isFindVr) {
+        Map<Double, Double> allRayleighWave = new TreeMap<>();
+        double rayleighWavesSum;
         for (int i = 0; i < deltaX / 100; i++) {
             if (isFindVr) {
-                waveReleySum = Math.abs(Math.pow((deltaX - i) / shearWaveVelocity, 6) - 8 * Math.pow((deltaX - i) / shearWaveVelocity, 4) +
+                rayleighWavesSum = Math.abs(Math.pow((deltaX - i) / shearWaveVelocity, 6) - 8 * Math.pow((deltaX - i) / shearWaveVelocity, 4) +
                         (24 - 16 * Math.pow(shearWaveVelocity / longitudinalWaveVelocity, 2)) * Math.pow((deltaX - i) / shearWaveVelocity, 2) -
                         16 * (1 - Math.pow(shearWaveVelocity / longitudinalWaveVelocity, 2)));
             } else {
-                waveReleySum = Math.abs(Math.pow((deltaX + i) / shearWaveVelocity, 6) - 8 * Math.pow((deltaX + i) / shearWaveVelocity, 4) +
+                rayleighWavesSum = Math.abs(Math.pow((deltaX + i) / shearWaveVelocity, 6) - 8 * Math.pow((deltaX + i) / shearWaveVelocity, 4) +
                         (24 - 16 * Math.pow(shearWaveVelocity / longitudinalWaveVelocity, 2)) * Math.pow((deltaX + i) / shearWaveVelocity, 2) -
                         16 * (1 - Math.pow(shearWaveVelocity / longitudinalWaveVelocity, 2)));
             }
 
 
-            allWaveReley.put(waveReleySum, deltaX - i);
+            allRayleighWave.put(rayleighWavesSum, deltaX - i);
         }
-        return allWaveReley.get(allWaveReley.keySet().toArray()[0]);
+        return allRayleighWave.get(allRayleighWave.keySet().toArray()[0]);
     }
 
-    double topReleyVelocity = findVelocity(deltaX, shearWaveVelocityTopLayer, longitudinalWaveVelocityTopLayer, true);
-
-    // сложные геофизические формулы для нахождения скорости поперечной волны из Релеевской скорости и частоты волны
+    // сложные геофизические формулы для нахождения скорости поперечной волны из скорости Релеевской волны
     void shearWaveVelocityBottomLayer() {
         for (PvsFile file : pvsFilesList) {
             int impactPoint = Integer.parseInt(file.getName());
-
             double shearWaveVelocityBottomLayer;
             double botLayerDepth;
 
             for (Map.Entry<Double, Double> values : file.getDispersionResult().entrySet()) {
                 double frequency = values.getKey();
-                double releyVelocity = values.getValue();
-                botLayerDepth = releyVelocity / frequency;
-                double deptCoefficient = topLayerDepth / (releyVelocity / frequency);
-                double deltaF1 = Math.exp(-1 * Math.sqrt(1 - topReleyVelocity * topReleyVelocity / longitudinalWaveVelocityTopLayer /
+                double rayleighVelocity = values.getValue();
+                botLayerDepth = rayleighVelocity / frequency;
+                double topRayleighVelocity = findVelocity(deltaX, shearWaveVelocityTopLayer, longitudinalWaveVelocityTopLayer, true);
+                double deptCoefficient = topLayerDepth / (rayleighVelocity / frequency);
+                double deltaF1 = Math.exp(-1 * Math.sqrt(1 - topRayleighVelocity * topRayleighVelocity / longitudinalWaveVelocityTopLayer /
                         longitudinalWaveVelocityTopLayer) * 2 * Math.PI * deptCoefficient);
-                double deltaX1 = Math.exp(-1 * Math.sqrt(1 - topReleyVelocity * topReleyVelocity / shearWaveVelocityTopLayer /
+                double deltaX1 = Math.exp(-1 * Math.sqrt(1 - topRayleighVelocity * topRayleighVelocity / shearWaveVelocityTopLayer /
                         shearWaveVelocityTopLayer) * 2 * Math.PI * deptCoefficient);
                 double deltaU1 = deltaF1 + deltaX1;
                 double deltaUpr = deltaU1 / 2;
-                double coefDdelta = 1 - deltaUpr + deltaUpr * deltaUpr;
-                double releyWaveVelocityBottomLayer = (topReleyVelocity * releyVelocity * deltaUpr) /
-                        (topReleyVelocity * coefDdelta - releyVelocity * (coefDdelta - deltaUpr));
-
+                double cofDelta = 1 - deltaUpr + deltaUpr * deltaUpr;
+                double rayleighWaveVelocityBottomLayer = (topRayleighVelocity * rayleighVelocity * deltaUpr) /
+                        (topRayleighVelocity * cofDelta - rayleighVelocity * (cofDelta - deltaUpr));
                 double poissonRatioBot = 1 / (0.88 + (0.06 / 0.35) * ((longitudinalWaveVelocityRock * longitudinalWaveVelocityRock -
-                        2 * releyWaveVelocityBottomLayer * releyWaveVelocityBottomLayer) / (2 * longitudinalWaveVelocityRock * longitudinalWaveVelocityRock -
-                        2 * releyWaveVelocityBottomLayer * releyWaveVelocityBottomLayer)));
-                double deltaX = Math.ceil(releyWaveVelocityBottomLayer * poissonRatioBot);
+                        2 * rayleighWaveVelocityBottomLayer * rayleighWaveVelocityBottomLayer) / (2 * longitudinalWaveVelocityRock * longitudinalWaveVelocityRock -
+                        2 * rayleighWaveVelocityBottomLayer * rayleighWaveVelocityBottomLayer)));
+                double deltaX = Math.ceil(rayleighWaveVelocityBottomLayer * poissonRatioBot);
 
-                shearWaveVelocityBottomLayer = findVelocity(deltaX, releyWaveVelocityBottomLayer, longitudinalWaveVelocityRock, false);
+                shearWaveVelocityBottomLayer = findVelocity(deltaX, rayleighWaveVelocityBottomLayer, longitudinalWaveVelocityRock, false);
 
-                System.out.println(impactPoint + " " + (-1 * botLayerDepth) + " " + shearWaveVelocityBottomLayer);
-
+                resultList.add(impactPoint + "," + (-1 * botLayerDepth) + "," + shearWaveVelocityBottomLayer / 1000);
             }
         }
     }
+
+    void writeDatFile() {
+        try {
+            Files.write(Paths.get(filePath + "\\test.dat" ), resultList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
-
-
-//    static int longitudinalWaveVelocityTopLayer;
-//    static int shearWaveVelocityTopLayer;
-//    static double topLayerDepth;
-//    static int longitudinalWaveVelocityRock;

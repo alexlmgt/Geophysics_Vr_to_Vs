@@ -17,7 +17,10 @@ public class Main {
     static double topLayerDepth;
     static double longitudinalWaveVelocityRock;
 
+    static String filePath;
+
     public static void main(String[] args) {
+
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             System.out.print("Введите скорость продольной волны (Vp1) для верхнего слоя > ");
@@ -33,9 +36,9 @@ public class Main {
             longitudinalWaveVelocityRock = Integer.parseInt(reader.readLine().trim());
 
             String str;
-            System.out.println("Введите путь до файла > ");
-            while (!(str = reader.readLine()).equals("exit")) {
-                System.out.println("Введите путь до файла > ");
+            System.out.println("Введите путь до файлов, в конце введите \"end\" > ");
+            while (!(str = reader.readLine()).equals("end")) {
+                filePath =  str.substring(0, str.lastIndexOf('\\') + 1);
                 filesList.add(str);
             }
         } catch (IOException e) {
@@ -43,10 +46,10 @@ public class Main {
         }
 
         new PvsFile().readFile();
-
-
         Converter converter = new Converter();
         converter.shearWaveVelocityBottomLayer();
+        converter.writeDatFile();
+
     }
 
 
