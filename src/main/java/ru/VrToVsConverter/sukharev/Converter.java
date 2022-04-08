@@ -13,10 +13,7 @@ import static ru.VrToVsConverter.sukharev.Main.*;
 public class Converter {
 
     List<String> resultList = new ArrayList<>();
-
-    private final double poissonRatio = (longitudinalWaveVelocityTopLayer * longitudinalWaveVelocityTopLayer -
-            2 * shearWaveVelocityTopLayer * shearWaveVelocityTopLayer) / (2 * longitudinalWaveVelocityTopLayer * longitudinalWaveVelocityTopLayer -
-            2 * shearWaveVelocityTopLayer * shearWaveVelocityTopLayer); // коэффициент Пуассона
+    private final double poissonRatio = findPoissonRatio(); // коэффициент Пуассона
 
     private final double deltaX = Math.ceil(shearWaveVelocityTopLayer * (0.88 + (0.06 / 0.35) * poissonRatio));
 
@@ -82,5 +79,11 @@ public class Converter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    double findPoissonRatio() {
+        return (longitudinalWaveVelocityTopLayer * longitudinalWaveVelocityTopLayer -
+                2 * shearWaveVelocityTopLayer * shearWaveVelocityTopLayer) / (2 * longitudinalWaveVelocityTopLayer * longitudinalWaveVelocityTopLayer -
+                2 * shearWaveVelocityTopLayer * shearWaveVelocityTopLayer);
     }
 }

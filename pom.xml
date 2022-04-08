@@ -19,6 +19,22 @@
             <artifactId>javafx-controls</artifactId>
             <version>18</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-archetype-fxml</artifactId>
+            <version>0.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>18</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics </artifactId>
+            <version>18</version>
+            <classifier>win</classifier>
+        </dependency>
     </dependencies>
 
 
