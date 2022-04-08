@@ -1,9 +1,7 @@
 package ru.VrToVsConverter.sukharev;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +24,16 @@ public class Converter {
         Map<Double, Double> allRayleighWave = new TreeMap<>();
         double rayleighWavesSum;
         for (int i = 0; i < deltaX / 100; i++) {
+            double mathD = 24 - 16 * Math.pow(shearWaveVelocity / longitudinalWaveVelocity, 2);
+            double mathDD = 16 * (1 - Math.pow(shearWaveVelocity / longitudinalWaveVelocity, 2));
             if (isFindVr) {
                 rayleighWavesSum = Math.abs(Math.pow((deltaX - i) / shearWaveVelocity, 6) - 8 * Math.pow((deltaX - i) / shearWaveVelocity, 4) +
-                        (24 - 16 * Math.pow(shearWaveVelocity / longitudinalWaveVelocity, 2)) * Math.pow((deltaX - i) / shearWaveVelocity, 2) -
-                        16 * (1 - Math.pow(shearWaveVelocity / longitudinalWaveVelocity, 2)));
+                        mathD * Math.pow((deltaX - i) / shearWaveVelocity, 2) -
+                        mathDD);
             } else {
                 rayleighWavesSum = Math.abs(Math.pow((deltaX + i) / shearWaveVelocity, 6) - 8 * Math.pow((deltaX + i) / shearWaveVelocity, 4) +
-                        (24 - 16 * Math.pow(shearWaveVelocity / longitudinalWaveVelocity, 2)) * Math.pow((deltaX + i) / shearWaveVelocity, 2) -
-                        16 * (1 - Math.pow(shearWaveVelocity / longitudinalWaveVelocity, 2)));
+                        mathD * Math.pow((deltaX + i) / shearWaveVelocity, 2) -
+                        mathDD);
             }
 
 
@@ -78,7 +78,7 @@ public class Converter {
 
     void writeDatFile() {
         try {
-            Files.write(Paths.get(filePath + "\\test.dat" ), resultList);
+            Files.write(Paths.get(filePath + "\\dataAll.dat"), resultList);
         } catch (IOException e) {
             e.printStackTrace();
         }
