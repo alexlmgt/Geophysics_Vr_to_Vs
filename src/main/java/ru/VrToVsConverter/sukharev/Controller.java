@@ -37,6 +37,8 @@ public class Controller {
 
     @FXML
     void initialize() {
+
+
         assert Vp2Field != null : "fx:id=\"Vp2Field\" was not injected: check your FXML file 'Sample.fxml'.";
         assert VpField != null : "fx:id=\"VpField\" was not injected: check your FXML file 'Sample.fxml'.";
         assert VsField != null : "fx:id=\"VsField\" was not injected: check your FXML file 'Sample.fxml'.";

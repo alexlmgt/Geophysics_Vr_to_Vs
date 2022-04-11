@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 public class Main extends Application {
@@ -25,7 +24,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("Sample.fxml")));
+        Parent root = FXMLLoader.load(getClass().getResource("/Sample.fxml"));
         stage.setTitle("Vp to Vs Converter");
         stage.setScene(new Scene(root, 600, 400));
         stage.setResizable(false);
@@ -34,6 +33,7 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
+        launch(args);
 
         //работа в командной строке
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
