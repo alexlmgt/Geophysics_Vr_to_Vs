@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static ru.VrToVsConverter.sukharev.Main.*;
+import static ru.VrToVsConverter.sukharev.Controller.*;
 
 public class Converter {
 
     List<String> resultList = new ArrayList<>();
     private final double poissonRatio = findPoissonRatio(); // коэффициент Пуассона
 
-    private final double deltaX = Math.ceil(shearWaveVelocityTopLayer * (0.88 + (0.06 / 0.35) * poissonRatio));
+    double deltaX = Math.ceil(shearWaveVelocityTopLayer * (0.88 + (0.06 / 0.35) * poissonRatio));
 
     private double findVelocity(double deltaX, double shearWaveVelocity, double longitudinalWaveVelocity, boolean isFindVr) {
         Map<Double, Double> allRayleighWave = new TreeMap<>();
@@ -27,14 +27,13 @@ public class Converter {
                 rayleighWavesSum = Math.abs(Math.pow((deltaX - i) / shearWaveVelocity, 6) - 8 * Math.pow((deltaX - i) / shearWaveVelocity, 4) +
                         mathD * Math.pow((deltaX - i) / shearWaveVelocity, 2) -
                         mathDD);
+                allRayleighWave.put(rayleighWavesSum, deltaX - i);
             } else {
                 rayleighWavesSum = Math.abs(Math.pow((deltaX + i) / shearWaveVelocity, 6) - 8 * Math.pow((deltaX + i) / shearWaveVelocity, 4) +
                         mathD * Math.pow((deltaX + i) / shearWaveVelocity, 2) -
                         mathDD);
+                allRayleighWave.put(rayleighWavesSum, deltaX + i);
             }
-
-
-            allRayleighWave.put(rayleighWavesSum, deltaX - i);
         }
         return allRayleighWave.get(allRayleighWave.keySet().toArray()[0]);
     }

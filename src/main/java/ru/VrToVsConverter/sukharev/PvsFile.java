@@ -1,13 +1,14 @@
 package ru.VrToVsConverter.sukharev;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static ru.VrToVsConverter.sukharev.Main.filesList;
-import static ru.VrToVsConverter.sukharev.Main.pvsFilesList;
+import static ru.VrToVsConverter.sukharev.Controller.filesList;
+import static ru.VrToVsConverter.sukharev.Controller.pvsFilesList;
 
 public class PvsFile {
     private String name;
@@ -34,8 +35,8 @@ public class PvsFile {
     }
 
     void readFile() {
-        for (String file : filesList) {
-            String fileName = file.substring(file.lastIndexOf('\\') + 1, file.lastIndexOf('.'));
+        for (File file : filesList) {
+            String fileName = file.getName().substring(0, file.getName().lastIndexOf('.'));
             Map<Double, Double> dispersionResult = new TreeMap<>();
             PvsFile pvsFile = new PvsFile(fileName, dispersionResult);
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
