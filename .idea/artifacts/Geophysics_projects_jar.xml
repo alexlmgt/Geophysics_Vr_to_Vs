@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Geophysics_projects:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Geophysics_projects_jar</output-path>
+    <root id="archive" name="Geophysics_projects.jar">
+      <element id="module-output" name="Geophysics_projects" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/18/javafx-controls-18-win.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/mortbay/jetty/jetty/6.1.25/jetty-6.1.25.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/18/javafx-fxml-18-win.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/mortbay/jetty/servlet-api/2.5-20081211/servlet-api-2.5-20081211.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/18/javafx-controls-18.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/18/javafx-graphics-18-win.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-base/18/javafx-base-18-win.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/18/javafx-graphics-18.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/18/javafx-fxml-18.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-archetype-fxml/0.0.6/javafx-archetype-fxml-0.0.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/mortbay/jetty/jetty-util/6.1.25/jetty-util-6.1.25.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-base/18/javafx-base-18.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

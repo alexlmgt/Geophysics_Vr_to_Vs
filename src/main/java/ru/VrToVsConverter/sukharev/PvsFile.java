@@ -45,6 +45,9 @@ public class PvsFile {
                 while ((str = reader.readLine()) != null) {
                     String[] box = str.trim().split(" ");
                     if (box.length == 4) {
+                        if(Double.parseDouble(box[2]) != 1 || Double.parseDouble(box[3]) != 0) {
+                            continue;
+                        }
                         Double frequency = Double.parseDouble(box[0]);
                         Double rayleighWaveVelocity = Double.parseDouble(box[1]);
                         dispersionResult.put(frequency, rayleighWaveVelocity);

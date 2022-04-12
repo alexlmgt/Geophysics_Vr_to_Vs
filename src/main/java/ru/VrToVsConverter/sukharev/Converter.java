@@ -40,6 +40,7 @@ public class Converter {
 
     // сложные геофизические формулы для нахождения скорости поперечной волны из скорости Релеевской волны
     void shearWaveVelocityBottomLayer() {
+
         for (PvsFile file : pvsFilesList) {
             int impactPoint = Integer.parseInt(file.getName());
             double shearWaveVelocityBottomLayer;
@@ -48,6 +49,9 @@ public class Converter {
             for (Map.Entry<Double, Double> values : file.getDispersionResult().entrySet()) {
                 double frequency = values.getKey();
                 double rayleighVelocity = values.getValue();
+
+                if (frequency < 0 || rayleighVelocity < 0 || rayleighVelocity > longitudinalWaveVelocityTopLayer) continue;
+
                 botLayerDepth = rayleighVelocity / frequency;
                 double topRayleighVelocity = findVelocity(deltaX, shearWaveVelocityTopLayer, longitudinalWaveVelocityTopLayer, true);
                 double deptCoefficient = topLayerDepth / (rayleighVelocity / frequency);
@@ -66,6 +70,7 @@ public class Converter {
                 double deltaX = Math.ceil(rayleighWaveVelocityBottomLayer * poissonRatioBot);
 
                 shearWaveVelocityBottomLayer = findVelocity(deltaX, rayleighWaveVelocityBottomLayer, longitudinalWaveVelocityRock, false);
+                if (!isRealVs(shearWaveVelocityBottomLayer)) continue;
 
                 resultList.add(impactPoint + "," + (-1 * botLayerDepth) + "," + shearWaveVelocityBottomLayer / 1000);
             }
@@ -81,8 +86,16 @@ public class Converter {
     }
 
     double findPoissonRatio() {
-        return (longitudinalWaveVelocityTopLayer * longitudinalWaveVelocityTopLayer -
+        double poissonRatio = (longitudinalWaveVelocityTopLayer * longitudinalWaveVelocityTopLayer -
                 2 * shearWaveVelocityTopLayer * shearWaveVelocityTopLayer) / (2 * longitudinalWaveVelocityTopLayer * longitudinalWaveVelocityTopLayer -
                 2 * shearWaveVelocityTopLayer * shearWaveVelocityTopLayer);
+        return poissonRatio >= 0.1 ? poissonRatio : -1;
+    }
+
+    private boolean isRealVs (double Vs) {
+        double rockPoissonRatio = (longitudinalWaveVelocityRock * longitudinalWaveVelocityRock -
+                2 * Vs * Vs) / (2 * longitudinalWaveVelocityRock * longitudinalWaveVelocityRock -
+                2 * Vs * Vs);
+        return rockPoissonRatio >= 0.1;
     }
 }

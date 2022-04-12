@@ -12,7 +12,6 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -26,6 +25,7 @@ public class Controller {
     static double topLayerDepth;
     static double longitudinalWaveVelocityRock;
     static String filePath;
+
 
     @FXML
     private ResourceBundle resources;
@@ -77,6 +77,11 @@ public class Controller {
                 shearWaveVelocityTopLayer = Double.parseDouble(VsField.getText());
 
                 double poissonRatio = converter.findPoissonRatio();
+                if (poissonRatio == -1) {
+                    errorLabel.setVisible(true);
+                    errorLabel.setText("Ошибка ввода данных, невозможный коэффициент Пуассона");
+                    return;
+                }
                 poissonRatioField.setText(String.format("%.4g%n", poissonRatio));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -94,7 +99,7 @@ public class Controller {
                 filePath = filesList.get(0).getParent();
 
                 ObservableList<String> itemList = FXCollections.observableArrayList();
-                for(File ele : filesList) {
+                for (File ele : filesList) {
                     itemList.add(ele.getAbsolutePath());
                 }
                 filesNameField.setStyle("-fx-font-size: 10px;");
@@ -118,11 +123,26 @@ public class Controller {
                 longitudinalWaveVelocityRock = Double.parseDouble(Vp2Field.getText());
                 topLayerDepth = Double.parseDouble(depthField.getText());
 
+                if (filesList.isEmpty()) {
+                    errorLabel.setVisible(true);
+                    errorLabel.setText("Выберите файлы .pvs");
+                    return;
+                }
+
+                if (converter.findPoissonRatio() == -1) {
+                    errorLabel.setVisible(true);
+                    errorLabel.setText("Ошибка ввода данных, невозможный коэффициент Пуассона");
+                    return;
+                }
+
                 PvsFile pvsFile = new PvsFile();
                 pvsFile.readFile();
-
                 converter.shearWaveVelocityBottomLayer();
                 converter.writeDatFile();
+
+                errorLabel.setVisible(true);
+                errorLabel.setText("Файл \"dataALL.dat\" создан!");
+
             } catch (Exception e) {
                 e.printStackTrace();
                 errorLabel.setVisible(true);
