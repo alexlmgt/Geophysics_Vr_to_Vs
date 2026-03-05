@@ -17,6 +17,7 @@ public class PvsFile {
     public PvsFile() {
     }
 
+
     public PvsFile(String name, Map<Double, Double> dispersionResult) {
         this.name = name;
         this.dispersionResult = dispersionResult;
@@ -36,16 +37,18 @@ public class PvsFile {
 
     void readFile() {
         for (File file : filesList) {
-            String fileName = file.getName().substring(0, file.getName().lastIndexOf('.'));
+//            String fileName = file.getName().substring(0, file.getName().lastIndexOf('.'));
+            String fileName = file.getName().replace(".pvs", "");
             Map<Double, Double> dispersionResult = new TreeMap<>();
             PvsFile pvsFile = new PvsFile(fileName, dispersionResult);
+
+
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String str;
-
                 while ((str = reader.readLine()) != null) {
                     String[] box = str.trim().split(" ");
                     if (box.length == 4) {
-                        if(Double.parseDouble(box[2]) != 1 || Double.parseDouble(box[3]) != 0) {
+                        if(Double.parseDouble(box[2]) != 1 ) {
                             continue;
                         }
                         Double frequency = Double.parseDouble(box[0]);
@@ -54,11 +57,13 @@ public class PvsFile {
                     }
                 }
                 pvsFile.setDispersionResult(dispersionResult);
+                pvsFilesList.add(pvsFile);
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            pvsFilesList.add(pvsFile);
+
+
         }
 
     }

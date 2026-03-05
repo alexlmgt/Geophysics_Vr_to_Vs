@@ -2,6 +2,7 @@ package ru.VrToVsConverter.sukharev;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class Converter {
     void shearWaveVelocityBottomLayer() {
 
         for (PvsFile file : pvsFilesList) {
-            int impactPoint = Integer.parseInt(file.getName());
+            double impactPoint = Double.parseDouble(file.getName().replace(',', '.'));
             double shearWaveVelocityBottomLayer;
             double botLayerDepth;
 
@@ -68,10 +69,12 @@ public class Converter {
                         2 * rayleighWaveVelocityBottomLayer * rayleighWaveVelocityBottomLayer) / (2 * longitudinalWaveVelocityRock * longitudinalWaveVelocityRock -
                         2 * rayleighWaveVelocityBottomLayer * rayleighWaveVelocityBottomLayer)));
                 double deltaX = Math.ceil(rayleighWaveVelocityBottomLayer * poissonRatioBot);
-
                 shearWaveVelocityBottomLayer = findVelocity(deltaX, rayleighWaveVelocityBottomLayer, longitudinalWaveVelocityRock, false);
+
                 if (!isRealVs(shearWaveVelocityBottomLayer)) continue;
 
+
+                System.out.println(impactPoint + "," + (-1 * botLayerDepth) + "," + shearWaveVelocityBottomLayer / 1000);
                 resultList.add(impactPoint + "," + (-1 * botLayerDepth) + "," + shearWaveVelocityBottomLayer / 1000);
             }
         }

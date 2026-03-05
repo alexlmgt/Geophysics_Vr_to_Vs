@@ -9,8 +9,5 @@
         <module name="Geophysics_projects" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="Geophysics_projects" target="11" />
-    </bytecodeTargetLevel>
   </component>
 </project>

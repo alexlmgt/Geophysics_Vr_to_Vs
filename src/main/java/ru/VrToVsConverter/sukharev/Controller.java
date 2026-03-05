@@ -73,8 +73,8 @@ public class Controller {
                 Converter converter = new Converter();
                 errorLabel.setVisible(false);
 
-                longitudinalWaveVelocityTopLayer = Double.parseDouble(VpField.getText());
-                shearWaveVelocityTopLayer = Double.parseDouble(VsField.getText());
+                longitudinalWaveVelocityTopLayer = Double.parseDouble(VpField.getText().replace(',', '.'));
+                shearWaveVelocityTopLayer = Double.parseDouble(VsField.getText().replace(',', '.'));
 
                 double poissonRatio = converter.findPoissonRatio();
                 if (poissonRatio == -1) {
@@ -118,10 +118,10 @@ public class Controller {
                 Converter converter = new Converter();
                 errorLabel.setVisible(false);
 
-                longitudinalWaveVelocityTopLayer = Double.parseDouble(VpField.getText());
-                shearWaveVelocityTopLayer = Double.parseDouble(VsField.getText());
-                longitudinalWaveVelocityRock = Double.parseDouble(Vp2Field.getText());
-                topLayerDepth = Double.parseDouble(depthField.getText());
+                longitudinalWaveVelocityTopLayer = Double.parseDouble(VpField.getText().replace(',', '.'));
+                shearWaveVelocityTopLayer = Double.parseDouble(VsField.getText().replace(',', '.'));
+                longitudinalWaveVelocityRock = Double.parseDouble(Vp2Field.getText().replace(',', '.'));
+                topLayerDepth = Double.parseDouble(depthField.getText().replace(',', '.'));
 
                 if (filesList.isEmpty()) {
                     errorLabel.setVisible(true);
@@ -139,6 +139,7 @@ public class Controller {
                 pvsFile.readFile();
                 converter.shearWaveVelocityBottomLayer();
                 converter.writeDatFile();
+
 
                 errorLabel.setVisible(true);
                 errorLabel.setText("Файл \"dataALL.dat\" создан!");
